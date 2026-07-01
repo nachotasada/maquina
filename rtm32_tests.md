@@ -49,7 +49,7 @@ Anduvo. 3 - 7 = -4 representado como `0xFFFFFFFC`.
 `ADDI` — suma con inmediato de 17 bits con signo.
 
 ## Conclusiones
-⚠️ **Bug del simulador.** ADDI (encoding `0x0814002A`) genera CAUSE=3 y deja el simulador en estado inválido. Mismo comportamiento que ANDI (bug documentado por el profesor). Instrucción omitida.
+**Bug del simulador.** ADDI (encoding `0x0814002A`) genera CAUSE=3 y deja el simulador en estado inválido. Mismo comportamiento que ANDI (bug documentado por el profesor). Instrucción omitida.
 
 ---
 
@@ -445,8 +445,4 @@ Anduvo. 17 mod 5 = 2.
 `LUI` — carga inmediato en los 16 bits altos del registro.
 
 ## Conclusiones
-⚠️ **Bug del simulador.** LUI (opcode 7) genera CAUSE=3 con h=0 (`0x3814ABCD`) y con h=1 (`0x3815ABCD`). Mismo comportamiento que ADDI. Instrucción omitida.
-
----
-
-> **Nota:** Las instrucciones TRAP, RFT, CFS y CTS no se testean ya que requieren configuración del sistema de excepciones. Las instrucciones ANDI, ADDI y LUI presentan bugs en el simulador: generan CAUSE=3 al ejecutarse. ANDI está documentada por el profesor como bug conocido; ADDI y LUI exhiben el mismo comportamiento.
+**Bug del simulador.** LUI (opcode 7) genera CAUSE=3 con h=0 (`0x3814ABCD`) y con h=1 (`0x3815ABCD`). Mismo comportamiento que ADDI. Instrucción omitida.
