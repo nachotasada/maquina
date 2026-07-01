@@ -81,7 +81,7 @@ ADDI $t1, $t0, -10    ; $t1 = 42 + (-10) = 32
 - `$t1` = `0x00000020` (32)
 
 ## Conclusiones
-Anduvo. El primer ADDI funcionó como un "load immediate" usando `$zero`. El segundo confirmó la extensión de signo del inmediato negativo (-10 se extendió correctamente a 32 bits antes de sumarse).
+⚠️ **Bug del simulador — instrucción no testeable.** Al ejecutar ADDI con encoding `0x0814002A`, el simulador generó una excepción interna (CAUSE = 3) en lugar de ejecutar la operación. El simulador entró en estado inválido y fue necesario reiniciarlo. Este comportamiento es consistente con el bug de ANDI documentado por el profesor. La instrucción ADDI se omite del testeo funcional por este motivo.
 
 ---
 
@@ -256,18 +256,21 @@ SRA $t0, $t1, 2
 ```
 
 ## Precondiciones
-- Setear `$t1` = `0x80000000` (-2147483648)
+- Setear `r12` = `0x80000000` (-2147483648) — este es el campo **rt** del encoding, que el hardware usa como fuente real
+
+> **Discrepancia con el manual:** el manual indica `R[rd] = R[rs]` como fuente, pero el hardware usa `R[rt]`. El valor debe estar en rt (r12), no en rs.
 
 ## Code
-```asm
-SRA $t0, $t1, 2       ; $t0 = $t1 >>> 2 (aritmético, preserva signo)
+Machine code: `0x0018A102`
+```
+[31:27]=00000 R-type | [26:22]=00000 rs=r0 | [21:17]=01100 rt=r12 | [16:12]=01010 rd=r10 | [11:7]=00010 aux=2 | [5:0]=000010 func=SRA
 ```
 
 ## Postcondiciones
-- `$t0` = `0xE0000000` (los dos bits de mayor peso son 1, signo propagado)
+- `r10` = `0xE0000000` (los dos bits de mayor peso son 1, signo propagado)
 
 ## Conclusiones
-Anduvo. El SRA propagó el bit de signo hacia la derecha (extensión de signo), a diferencia del SRL que habría colocado ceros. Esto equivale a una división entera por 4 preservando el signo.
+Anduvo. El SRA propagó el bit de signo hacia la derecha, a diferencia del SRL que habría colocado ceros. Esto equivale a dividir por 4 preservando el signo. **Discrepancia detectada entre el manual y el hardware:** el manual especifica `R[rs]` como registro fuente, pero el hardware efectivamente lee `R[rt]`. Al colocar el valor en rs el resultado fue 0; al colocarlo en rt (r12) el resultado fue correcto (`0xE0000000`).
 
 ---
 
@@ -784,4 +787,4 @@ Anduvo. El desplazamiento dinámico desde registro funciona igual que el inmedia
 
 ---
 
-> **Nota:** Las instrucciones TRAP, RFT, CFS y CTS no se testean en este documento ya que requieren configuración del sistema de excepciones e interrupciones, lo cual agrega complejidad innecesaria para la validación básica del ISA. La instrucción ANDI está documentada en el manual como que tiene un bug conocido actualmente.
+> **Nota:** Las instrucciones TRAP, RFT, CFS y CTS no se testean en este documento ya que requieren configuración del sistema de excepciones e interrupciones, lo cual agrega complejidad innecesaria para la validación básica del ISA. Las instrucciones ANDI y ADDI presentan bugs en el simulador: ambas generan una excepción interna (CAUSE = 3) al ejecutarse, dejando el simulador en estado inválido. ANDI está documentada por el profesor como bug conocido; ADDI exhibe el mismo comportamiento.
