@@ -1021,34 +1021,16 @@ Anduvo. `0xBEEF0000 ^ 0xBEEF0000 = 0x00000000`.
 
 # Caso 53
 ## Descripción
-`CFS` — lee un registro especial S[aux] hacia un registro general.
+`CFS` / `CTS` — leer y escribir registros especiales del sistema (PSW, ECR, EPC, BVA, VBR).
 
 ## Conclusiones
-No se puede testear en el simulador: requiere acceso a registros especiales del sistema (PSW, ECR, EPC, BVA, VBR) que no están inicializados en el entorno de debug.
+No se pueden testear en el simulador: requieren el sistema de registros especiales inicializado, que no está disponible en el entorno de debug.
 
 ---
 
 # Caso 54
 ## Descripción
-`CTS` — escribe un registro general hacia un registro especial S[aux].
+`TRAP` / `RFT` — generar excepción de software y retornar de ella.
 
 ## Conclusiones
-No se puede testear en el simulador: requiere acceso a registros especiales del sistema (PSW, ECR, EPC, BVA, VBR) que no están inicializados en el entorno de debug.
-
----
-
-# Caso 55
-## Descripción
-`TRAP` — genera una excepción de software: EPC = PC+4; PC = M[aux << 2].
-
-## Conclusiones
-No se puede testear en el simulador: requiere tabla de vectores de excepción configurada en VBR y memoria de manejo de interrupciones inicializada.
-
----
-
-# Caso 56
-## Descripción
-`RFT` — retorno de excepción: PC = EPC.
-
-## Conclusiones
-No se puede testear en el simulador: depende de EPC seteado por una excepción previa (TRAP u otra), que a su vez requiere el sistema de excepciones configurado.
+No se pueden testear en el simulador: requieren tabla de vectores de excepción configurada en VBR y memoria de manejo de interrupciones inicializada.
