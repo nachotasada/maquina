@@ -671,10 +671,20 @@ Anduvo. SH guardó `0xFFFF` y LH lo recuperó extendiendo el signo.
 
 # Caso 34
 ## Descripción
-`LHU` — cargar media palabra sin extensión de signo.
+`LHU` — cargar media palabra sin extensión de signo. Verifica diferencia con `LH`.
+
+## Precondiciones
+- `M[0x10][15:0]` = `0xFFFF` (del Caso 33)
+- `$t1` = `0x00000010`
+
+## Code
+Encoding: `0x6AD40000`
+
+## Postcondiciones
+- `$t0` = `0x0000FFFF`
 
 ## Conclusiones
-⚠️ **Bug del simulador.** Con `0xFFFF` en `M[0x10][15:0]` (del Caso 33), `LHU` devolvió `0xFFFFFFFF` en lugar de `0x0000FFFF`. Aplica extensión de signo igual que `LH` en vez de extensión con ceros.
+Anduvo. `0xFFFF` con extensión de ceros = `0x0000FFFF`; con `LH` daría `0xFFFFFFFF`.
 
 ---
 
