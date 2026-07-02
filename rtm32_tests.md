@@ -965,4 +965,90 @@ Anduvo. `0xFF` sin extensión de signo = 255.
 
 ---
 
-> **Nota:** Las instrucciones TRAP, RFT, CFS y CTS no se testean ya que requieren configuración del sistema de excepciones. La instrucción LHU presenta un bug: devuelve el valor con extensión de signo en lugar de extensión con ceros (Caso 34).
+# Caso 50
+## Descripción
+`ANDIH` — AND con inmediato en los 16 bits altos (h=1): R[rt] = R[rs] & (ims << 16).
+
+## Precondiciones
+- `$t1` = `0xFFFFFFFF`
+
+## Code
+Encoding: `0x22D51234`
+
+## Postcondiciones
+- `$t0` = `0x12340000`
+
+## Conclusiones
+Anduvo. `0xFFFFFFFF & 0x12340000 = 0x12340000`.
+
+---
+
+# Caso 51
+## Descripción
+`ORIH` — OR con inmediato en los 16 bits altos (h=1): R[rt] = R[rs] | (ims << 16).
+
+## Precondiciones
+- `$t1` = `0x00000000`
+
+## Code
+Encoding: `0x2AD5BEEF`
+
+## Postcondiciones
+- `$t0` = `0xBEEF0000`
+
+## Conclusiones
+Anduvo. `0x00000000 | 0xBEEF0000 = 0xBEEF0000`.
+
+---
+
+# Caso 52
+## Descripción
+`XORIH` — XOR con inmediato en los 16 bits altos (h=1): R[rt] = R[rs] ^ (ims << 16).
+
+## Precondiciones
+- `$t1` = `0xBEEF0000`
+
+## Code
+Encoding: `0x32D5BEEF`
+
+## Postcondiciones
+- `$t0` = `0x00000000`
+
+## Conclusiones
+Anduvo. `0xBEEF0000 ^ 0xBEEF0000 = 0x00000000`.
+
+---
+
+# Caso 53
+## Descripción
+`CFS` — lee un registro especial S[aux] hacia un registro general.
+
+## Conclusiones
+No se puede testear en el simulador: requiere acceso a registros especiales del sistema (PSW, ECR, EPC, BVA, VBR) que no están inicializados en el entorno de debug.
+
+---
+
+# Caso 54
+## Descripción
+`CTS` — escribe un registro general hacia un registro especial S[aux].
+
+## Conclusiones
+No se puede testear en el simulador: requiere acceso a registros especiales del sistema (PSW, ECR, EPC, BVA, VBR) que no están inicializados en el entorno de debug.
+
+---
+
+# Caso 55
+## Descripción
+`TRAP` — genera una excepción de software: EPC = PC+4; PC = M[aux << 2].
+
+## Conclusiones
+No se puede testear en el simulador: requiere tabla de vectores de excepción configurada en VBR y memoria de manejo de interrupciones inicializada.
+
+---
+
+# Caso 56
+## Descripción
+`RFT` — retorno de excepción: PC = EPC.
+
+## Conclusiones
+No se puede testear en el simulador: depende de EPC seteado por una excepción previa (TRAP u otra), que a su vez requiere el sistema de excepciones configurado.
